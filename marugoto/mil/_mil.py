@@ -9,7 +9,7 @@ from torch import nn
 import torch.nn.functional as F
 from torch.utils.data import Dataset
 from fastai.vision.all import (
-    Learner, DataLoader, DataLoaders, RocAuc,
+    Learner, DataLoader, DataLoaders, RocAuc, F1Score,
     SaveModelCallback, CSVLogger)
 import pandas as pd
 import numpy as np
