@@ -19,7 +19,10 @@ def find_feat_folders(Cohort_Path,Desired_Feats):
     # generate path to folder of features
         if f == 'HIPT':
             p = [g for g in Base_Paths if 'HIPT' in g][0]
-            Feat_Paths.append(p)
+            if 'HIPT_features' in p:
+                Feat_Paths.append(p)
+            else:
+                Feat_Paths.append(os.path.join(p,f))
         else:
             p = [g for g in Base_Paths if not('HIPT' in g)][0]
             Feat_Paths.append(os.path.join(p,f))

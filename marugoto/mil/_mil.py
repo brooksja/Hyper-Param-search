@@ -10,7 +10,7 @@ import torch.nn.functional as F
 from torch.utils.data import Dataset
 from fastai.vision.all import (
     Learner, DataLoader, DataLoaders, RocAuc, F1Score,
-    SaveModelCallback, CSVLogger)
+    SaveModelCallback, CSVLogger,EarlyStoppingCallback)
 import pandas as pd
 import numpy as np
 
@@ -32,7 +32,7 @@ def train(
     targets: Tuple[SKLearnEncoder, np.ndarray],
     add_features: Iterable[Tuple[SKLearnEncoder, Sequence[Any]]] = [],
     valid_idxs: np.ndarray,
-    n_epoch: int = 32,
+    n_epoch: int = 100,
     patience: int = 16,
     path: Optional[Path] = None,
     lr_max: float = 1e-4,
@@ -87,8 +87,8 @@ def train(
 
     cbs = [
         SaveModelCallback(fname=f'best_valid'),
-        #EarlyStoppingCallback(monitor='roc_auc_score',
-        #                      min_delta=0.01, patience=patience),
+        EarlyStoppingCallback(monitor='valid_loss',
+                              min_delta=0.0001, patience=patience),
         CSVLogger()]
 
     learn.fit_one_cycle(n_epoch=n_epoch, lr_max=lr_max, cbs=cbs)
