@@ -21,3 +21,8 @@ Project to centralise and streamline hyper parameter tuning and model selection
 -lr --learning_rates  float                       OPTIONAL accepts list
 
 -bs --batch_size      int                         OPTIONAL accepts list
+
+-r --runs             int                         OTPIONAL
+
+
+Marugoto from https://github.com/KatherLab/marugoto.git, please also cite their work if using!
