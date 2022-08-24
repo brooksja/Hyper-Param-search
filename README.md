@@ -1,4 +1,4 @@
-# Hyper-Params-search
+# Hyper-Param-search
 Project to centralise and streamline hyper parameter tuning and model selection
 
 
