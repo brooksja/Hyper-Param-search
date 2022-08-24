@@ -10,7 +10,7 @@ import torch.nn.functional as F
 from torch.utils.data import Dataset
 from fastai.vision.all import (
     Learner, DataLoader, DataLoaders, RocAuc, F1Score,
-    SaveModelCallback, CSVLogger)
+    SaveModelCallback, CSVLogger,EarlyStoppingCallback, Callback)
 import pandas as pd
 import numpy as np
 
@@ -25,6 +25,12 @@ __all__ = ['train', 'deploy']
 
 T = TypeVar('T')
 
+# Following class to disable some output of learning from https://forums.fast.ai/t/is-there-a-way-to-quiet-output-disable-fastprogress/42415
+@dataclass
+class SilenceRecorder(Callback):
+    learn:Learner
+    def __post_init__(self):
+        self.learn.recorder.silent = True
 
 def train(
     *,
@@ -32,7 +38,7 @@ def train(
     targets: Tuple[SKLearnEncoder, np.ndarray],
     add_features: Iterable[Tuple[SKLearnEncoder, Sequence[Any]]] = [],
     valid_idxs: np.ndarray,
-    n_epoch: int = 32,
+    n_epoch: int = 100,
     patience: int = 16,
     path: Optional[Path] = None,
     lr_max: float = 1e-4,
@@ -87,9 +93,10 @@ def train(
 
     cbs = [
         SaveModelCallback(fname=f'best_valid'),
-        #EarlyStoppingCallback(monitor='roc_auc_score',
-        #                      min_delta=0.01, patience=patience),
-        CSVLogger()]
+        EarlyStoppingCallback(monitor='valid_loss',
+                              min_delta=0.0001, patience=patience),
+        CSVLogger(),
+        SilenceRecorder]
 
     learn.fit_one_cycle(n_epoch=n_epoch, lr_max=lr_max, cbs=cbs)
 
