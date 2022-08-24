@@ -1,4 +1,4 @@
-# Harry-Potter-Hyper-Params
+# Hyper-Params-search
 Project to centralise and streamline hyper parameter tuning and model selection
 
 
