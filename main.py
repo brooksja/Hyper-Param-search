@@ -41,6 +41,9 @@ def get_args():
     parser.add_argument(
         '-T','--target_label',required=True,help='Target label to train for'
     )
+    parser.add_argument(
+        '-r','--runs',type=int,help='Number of runs to do for each combination of hyperparameters',default=1
+    )
 
     return parser.parse_args()
 
@@ -56,6 +59,7 @@ n_folds = args.n_folds if isinstance(args.n_folds,list) else [args.n_folds]
 learning_rates = args.learning_rates if isinstance(args.learning_rates,list) else [args.learning_rates]
 batch_sizes = args.batch_size if isinstance(args.batch_size,list) else [args.batch_size]
 out_path_root = args.output_path
+runs = args.runs
 
 output = [['Model','Features','Fold','Learning_rate','Batch_size','epoch','train_loss','valid_loss','roc_auc_score']]
 
@@ -72,7 +76,8 @@ for i in tqdm(range(len(desired_feats))):
                         'target':args.target_label,
                         'lr':lr,
                         'bsize':bsize,
-                        'n_splits':n
+                        'n_splits':n,
+                        'runs':runs
                         }
                 output_path = src.training_utils.train_one_combo(params)
                 for j in range(n):
