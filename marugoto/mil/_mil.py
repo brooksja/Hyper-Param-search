@@ -25,13 +25,6 @@ __all__ = ['train', 'deploy']
 
 T = TypeVar('T')
 
-# Following class to disable some output of learning from https://forums.fast.ai/t/is-there-a-way-to-quiet-output-disable-fastprogress/42415
-@dataclass
-class SilenceRecorder(Callback):
-    learn:Learner
-    def __post_init__(self):
-        self.learn.recorder.silent = True
-
 def train(
     *,
     bags: Sequence[Iterable[Path]],
@@ -95,8 +88,8 @@ def train(
         SaveModelCallback(fname=f'best_valid'),
         EarlyStoppingCallback(monitor='valid_loss',
                               min_delta=0.0001, patience=patience),
-        CSVLogger(),
-        SilenceRecorder]
+        CSVLogger()
+        ]
 
     learn.fit_one_cycle(n_epoch=n_epoch, lr_max=lr_max, cbs=cbs)
 
