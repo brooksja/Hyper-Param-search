@@ -4,7 +4,7 @@ Project to centralise and streamline hyper parameter tuning and model selection
 
 ## Instructions
 1. Clone repo
-3. Create env from requirments.txt TODO
+3. Create env from requirments.txt
 5. Run python /path/to/main.py -C /path/to/cohort -F {'resnet18',xiyue','HIPT'} -O /path/to/output -T 'target_label'
 
 ## Options in full
