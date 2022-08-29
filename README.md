@@ -14,7 +14,7 @@ Project to centralise and streamline hyper parameter tuning and model selection
 
 -O --output_path      /path/to/output             REQUIRED
 
--T --target_label     'target_label'              REQUIRED
+-T --target_label     'target_label'              REQUIRED accepts list
 
 -n --n_folds          int                         OPTIONAL accepts list
 
