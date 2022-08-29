@@ -27,13 +27,16 @@ def get_args():
         '-F','--desired_feats',nargs='*',choices = ['resnet18','xiyue','HIPT'],required = True,help='List of pre-extracted features to try, choices: resnet18, xiyue, HIPT'
     )
     parser.add_argument(
+        '-A','--use_annotated',action='store_true',help = 'Flag if you want to look at annotated_features folders'
+    )
+    parser.add_argument(
         '-O','--output_path',required = True,help='Path to save all outputs'
     )
     parser.add_argument(
         '-n','--n_folds',nargs='*',type=int,help='Number of folds for cross-validation, can input int or list',default=3
     )
     parser.add_argument(
-        '-lr','--learning_rates',nargs='*',type=float,help='learning rate(s) to try, can be list or single number',default=1e-4
+        '-lr','--learning_rates',nargs='*',type=float,help='Learning rate(s) to try, can be list or single number',default=1e-4
     )
     parser.add_argument(
         '-bs','--batch_size',nargs='*',type=int,help='Batch sizes to try, can be list or int',default =64
@@ -53,7 +56,7 @@ args = get_args()
 
 Cohort = args.cohort
 desired_feats = args.desired_feats if isinstance(args.desired_feats,list) else [args.desired_feats]
-feature_dirs = src.loading_utils.find_feat_folders(Cohort,desired_feats)
+feature_dirs = src.loading_utils.find_feat_folders(Cohort,desired_feats,args.use_annotated)
 clini_excel,slide_csv = src.loading_utils.find_tables(Cohort)
 n_folds = args.n_folds if isinstance(args.n_folds,list) else [args.n_folds]
 learning_rates = args.learning_rates if isinstance(args.learning_rates,list) else [args.learning_rates]
