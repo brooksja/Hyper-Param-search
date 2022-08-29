@@ -23,9 +23,12 @@ def train_one_combo(params):
     bsize = params['bsize'] if 'bsize' in params.keys() else 64
     runs = params['runs'] if 'runs' in params.keys() else 1
 
+    output_paths = []
+
     for r in range(runs):
         # make a path for the output based on original specification + this iteration's hyper params
         output_path = os.path.join(output_path_root,os.path.basename(feature_dir)+'_batch_size={}_lr={}'.format(bsize,lr),'Run_{}'.format(r))
+        output_paths.append(output_path)
 
         mil.helpers.categorical_crossval_(
                         clini_excel=clini_excel,
@@ -39,7 +42,7 @@ def train_one_combo(params):
                         categories=None,
                         lr_max=lr,
                         batch_size=bsize)
-    return output_path
+    return output_paths
     
 def get_best_stats(outpath):
     df = pd.read_csv(outpath)

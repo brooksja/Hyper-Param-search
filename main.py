@@ -39,7 +39,7 @@ def get_args():
         '-bs','--batch_size',nargs='*',type=int,help='Batch sizes to try, can be list or int',default =64
     )
     parser.add_argument(
-        '-T','--target_label',required=True,help='Target label to train for'
+        '-T','--target_label',nargs='*',required=True,help='Target label(s) to train for, will accept list'
     )
     parser.add_argument(
         '-r','--runs',type=int,help='Number of runs to do for each combination of hyperparameters',default=1
@@ -61,33 +61,37 @@ batch_sizes = args.batch_size if isinstance(args.batch_size,list) else [args.bat
 out_path_root = args.output_path
 runs = args.runs
 
-output = [['Model','Features','Fold','Learning_rate','Batch_size','epoch','train_loss','valid_loss','roc_auc_score']]
+output = [['Target_Label','Model','Features','Run','Fold','Learning_rate','Batch_size','epoch','train_loss','valid_loss','roc_auc_score']]
 
-for i in tqdm(range(len(desired_feats))):
-    f = feature_dirs[i]
-    for n in tqdm(n_folds):
-        for lr in tqdm(learning_rates):
-            for bsize in tqdm(batch_sizes):
-                params={
-                        'clini':clini_excel,
-                        'slide':slide_csv,
-                        'output':out_path_root,
-                        'feats':f,
-                        'target':args.target_label,
-                        'lr':lr,
-                        'bsize':bsize,
-                        'n_splits':n,
-                        'runs':runs
-                        }
-                output_path = src.training_utils.train_one_combo(params)
-                for j in range(n):
-                    new_data = src.training_utils.get_best_stats(os.path.join(output_path,'fold-{}'.format(j),'history.csv'))
-                    idx = new_data.iloc[0,0]
-                    new_row = ['MIL',desired_feats[i],'{}/{}'.format(j,n-1),params['lr'],params['bsize'],new_data.loc[idx,'epoch'],new_data.loc[idx,'train_loss'],new_data.loc[idx,'valid_loss'],new_data.loc[idx,'roc_auc_score']]
-                    output.append(new_row)
+for t in tqdm(args.target_label): # loop over target labels
+    for i in tqdm(range(len(desired_feats))): # loop over feature selection
+        f = feature_dirs[i]
+        for n in tqdm(n_folds): # loop over number of folds selected
+            for lr in tqdm(learning_rates): # loop over learning rates
+                for bsize in tqdm(batch_sizes): # loop over batch sizes
+                    params={ # set parameters for this particular combination
+                            'clini':clini_excel,
+                            'slide':slide_csv,
+                            'output':out_path_root,
+                            'feats':f,
+                            'target':t,
+                            'lr':lr,
+                            'bsize':bsize,
+                            'n_splits':n,
+                            'runs':runs
+                            }
+                    output_paths = src.training_utils.train_one_combo(params) # run the training step
+                    for j in range(runs): # for each run
+                        for k in range(n): # for each fold within a run
+                            # get the best performing model's stats
+                            new_data = src.training_utils.get_best_stats(os.path.join(output_paths[j],'fold-{}'.format(j),'history.csv'))
+                            idx = new_data.iloc[0,0]
+                            new_row = ['{}'.format(t),'MIL',desired_feats[i],'{}/{}'.format(j,runs-1),'{}/{}'.format(k,n-1),params['lr'],params['bsize'],new_data.loc[idx,'epoch'],new_data.loc[idx,'train_loss'],new_data.loc[idx,'valid_loss'],new_data.loc[idx,'roc_auc_score']]
+                            output.append(new_row) # add the new stats
 
 
 with open(os.path.join(out_path_root,'stats.csv'),'w') as f:
+    # save output to stats.csv
     writer = csv.writer(f)
     writer.writerows(output)
 
