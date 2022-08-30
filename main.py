@@ -87,7 +87,7 @@ for t in tqdm(args.target_label): # loop over target labels
                     for j in range(runs): # for each run
                         for k in range(n): # for each fold within a run
                             # get the best performing model's stats
-                            new_data = src.training_utils.get_best_stats(os.path.join(output_paths[j],'fold-{}'.format(j),'history.csv'))
+                            new_data = src.training_utils.get_best_stats(os.path.join(output_paths[j],'fold-{}'.format(k),'history.csv'))
                             idx = new_data.iloc[0,0]
                             new_row = ['{}'.format(t),'MIL',desired_feats[i],'{}/{}'.format(j,runs-1),'{}/{}'.format(k,n-1),params['lr'],params['bsize'],new_data.loc[idx,'epoch'],new_data.loc[idx,'train_loss'],new_data.loc[idx,'valid_loss'],new_data.loc[idx,'roc_auc_score']]
                             output.append(new_row) # add the new stats
