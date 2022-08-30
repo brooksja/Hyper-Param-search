@@ -12,6 +12,8 @@ Project to centralise and streamline hyper parameter tuning and model selection
 
 -F --desired_feats    {'resnet18',xiyue','HIPT'}  REQUIRED choice, accepts list
 
+-A --use_annotated                                OPTIONAL flag if you want to look at features_annotated folders (only)
+
 -O --output_path      /path/to/output             REQUIRED
 
 -T --target_label     'target_label'              REQUIRED accepts list

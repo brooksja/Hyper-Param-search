@@ -7,13 +7,16 @@ import os
 
 ########## Functions ##########
 
-def find_feat_folders(Cohort_Path,Desired_Feats):
+def find_feat_folders(Cohort_Path,Desired_Feats,Use_annotated):
     # Function walks through cohort folder looking for feature folders
     # Returns: list of paths to feature folders
     Feat_Paths = []
     Base_Paths = []
     for root,dirs,_ in os.walk(Cohort_Path):
-        [Base_Paths.append(os.path.join(root,d)) for d in dirs if 'feature' in d if not('annotated' in d)] # checks for folders containing features but ignores annotated
+        if Use_annotated:
+            [Base_Paths.append(os.path.join(root,d)) for d in dirs if 'features_annotated' in d] # checks for folders containing annotated_features
+        else:
+            [Base_Paths.append(os.path.join(root,d)) for d in dirs if 'feature' in d if not('annotated' in d)] # checks for folders containing features but ignores annotated
     
     for f in Desired_Feats:
     # generate path to folder of features
