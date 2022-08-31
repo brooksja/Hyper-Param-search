@@ -27,7 +27,7 @@ def train_one_combo(params):
 
     for r in range(runs):
         # make a path for the output based on original specification + this iteration's hyper params
-        output_path = os.path.join(output_path_root,os.path.basename(feature_dir)+'_batch_size={}_lr={}'.format(bsize,lr),'Run_{}'.format(r))
+        output_path = os.path.join(output_path_root,target_label+'_'+os.path.basename(feature_dir)+'_bs={}_lr={}_nfolds={}'.format(bsize,lr,n_splits),'Run_{}'.format(r))
         output_paths.append(output_path)
 
         mil.helpers.categorical_crossval_(
