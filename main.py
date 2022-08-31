@@ -63,8 +63,11 @@ args = get_args()
 Cohort = args.cohort
 desired_feats = args.desired_feats if isinstance(args.desired_feats,list) else [args.desired_feats]
 feature_dirs = src.loading_utils.find_feat_folders(Cohort,desired_feats,args.use_annotated)
-if not(args.clini and args.sli):
+if not(args.clini and args.slide):
     clini_excel,slide_csv = src.loading_utils.find_tables(Cohort)
+else:
+    clini_excel = args.clini
+    slide_csv = args.slide
 n_folds = args.n_folds if isinstance(args.n_folds,list) else [args.n_folds]
 learning_rates = args.learning_rates if isinstance(args.learning_rates,list) else [args.learning_rates]
 batch_sizes = args.batch_size if isinstance(args.batch_size,list) else [args.batch_size]
