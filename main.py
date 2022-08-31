@@ -24,6 +24,12 @@ def get_args():
         '-C','--cohort',required = True,help = 'Path to cohort of interest, eg: /media/JD/LIVER/TCGA-LIVER-HCC/'
     )
     parser.add_argument(
+        '-cli','--clini',help = 'Path to clini table (excel format), eg: /media/JD/LIVER/TCGA-LIVER-HCC/tables/CLINI.xlsx'
+    )
+    parser.add_argument(
+        '-sli','--slide',help = 'Path to slide table (csv format), eg: /media/JD/LIVER/TCGA-LIVER-HCC/tables/SLIDE.csv'
+    )
+    parser.add_argument(
         '-F','--desired_feats',nargs='*',choices = ['resnet18','xiyue','HIPT'],required = True,help='List of pre-extracted features to try, choices: resnet18, xiyue, HIPT'
     )
     parser.add_argument(
@@ -57,7 +63,8 @@ args = get_args()
 Cohort = args.cohort
 desired_feats = args.desired_feats if isinstance(args.desired_feats,list) else [args.desired_feats]
 feature_dirs = src.loading_utils.find_feat_folders(Cohort,desired_feats,args.use_annotated)
-clini_excel,slide_csv = src.loading_utils.find_tables(Cohort)
+if not(args.clini and args.sli):
+    clini_excel,slide_csv = src.loading_utils.find_tables(Cohort)
 n_folds = args.n_folds if isinstance(args.n_folds,list) else [args.n_folds]
 learning_rates = args.learning_rates if isinstance(args.learning_rates,list) else [args.learning_rates]
 batch_sizes = args.batch_size if isinstance(args.batch_size,list) else [args.batch_size]
