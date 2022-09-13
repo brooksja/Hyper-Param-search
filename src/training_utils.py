@@ -18,7 +18,7 @@ def train_one_combo(params):
     target_label = params['target']
 
     # optional variables
-    n_splits = params['splits'] if 'splits' in params.keys() else 3
+    n_splits = params['n_splits'] if 'n_splits' in params.keys() else 3
     lr = params['lr'] if 'lr' in params.keys() else 1e-4
     bsize = params['bsize'] if 'bsize' in params.keys() else 64
     runs = params['runs'] if 'runs' in params.keys() else 1
