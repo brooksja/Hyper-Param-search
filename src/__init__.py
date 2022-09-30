@@ -1,0 +1,5 @@
+__author__ = 'James Brooks'
+__copyright__ = 'Copyright 2022, Liver AI Lab'
+__license__ = 'GNU3'
+__maintainer__ = 'James Brooks'
+__email__ = 'JamesAlexander.Brooks@med.uni-duesseldorf.de'
