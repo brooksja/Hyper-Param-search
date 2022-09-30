@@ -83,16 +83,16 @@ for t in tqdm(args.target_label): # loop over target labels
             for lr in tqdm(learning_rates): # loop over learning rates
                 for bsize in tqdm(batch_sizes): # loop over batch sizes
                     params={ # set parameters for this particular combination
-                            'clini':clini_excel,
-                            'slide':slide_csv,
-                            'output':out_path_root,
-                            'feats':f,
-                            'target':t,
-                            'lr':lr,
-                            'bsize':bsize,
-                            'n_splits':n,
-                            'runs':runs
-                            }
+                        'clini':clini_excel,
+                        'slide':slide_csv,
+                        'output':out_path_root,
+                        'feats':f,
+                        'target':t,
+                        'lr':lr,
+                        'bsize':bsize,
+                        'n_splits':n,
+                        'runs':runs
+                    }
                     output_paths = src.training_utils.train_one_combo(params) # run the training step
                     for j in range(runs): # for each run
                         for k in range(n): # for each fold within a run
