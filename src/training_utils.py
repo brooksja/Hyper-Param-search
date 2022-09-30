@@ -18,7 +18,7 @@ def train_one_combo(params):
     target_label = params['target']
 
     # optional variables
-    n_splits = params['splits'] if 'splits' in params.keys() else 3
+    n_splits = params['n_splits'] if 'n_splits' in params.keys() else 3
     lr = params['lr'] if 'lr' in params.keys() else 1e-4
     bsize = params['bsize'] if 'bsize' in params.keys() else 64
     runs = params['runs'] if 'runs' in params.keys() else 1
@@ -27,7 +27,7 @@ def train_one_combo(params):
 
     for r in range(runs):
         # make a path for the output based on original specification + this iteration's hyper params
-        output_path = os.path.join(output_path_root,os.path.basename(feature_dir)+'_batch_size={}_lr={}'.format(bsize,lr),'Run_{}'.format(r))
+        output_path = os.path.join(output_path_root,target_label+'_'+os.path.basename(feature_dir)+'_bs={}_lr={}_nfolds={}'.format(bsize,lr,n_splits),'Run_{}'.format(r))
         output_paths.append(output_path)
 
         mil.helpers.categorical_crossval_(
