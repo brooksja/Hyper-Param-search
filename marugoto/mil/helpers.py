@@ -210,6 +210,7 @@ def categorical_crossval_(
     categories: Optional[Iterable[str]] = None,
     lr_max: float = 1e-4,
     batch_size: int = 64,
+    bag_size: int = 512
 ) -> None:
     """Performs a cross-validation for a categorical target.
 
@@ -290,7 +291,7 @@ def categorical_crossval_(
             learn = _crossval_train(
                 fold_path=fold_path, fold_df=fold_train_df, fold=fold, info=info,
                 target_label=target_label, target_enc=target_enc,
-                cat_labels=cat_labels, cont_labels=cont_labels, lr_max=lr_max, batch_size=batch_size)
+                cat_labels=cat_labels, cont_labels=cont_labels, lr_max=lr_max, batch_size=batch_size, bag_size=bag_size)
             learn.export()
 
         fold_test_df = df.iloc[test_idxs]
@@ -302,7 +303,7 @@ def categorical_crossval_(
 
 
 def _crossval_train(
-    *, fold_path, fold_df, fold, info, target_label, target_enc, cat_labels, cont_labels, lr_max, batch_size,
+    *, fold_path, fold_df, fold, info, target_label, target_enc, cat_labels, cont_labels, lr_max, batch_size, bag_size
 ):
     """Helper function for training the folds."""
     assert fold_df.PATIENT.nunique() == len(fold_df)
@@ -334,7 +335,8 @@ def _crossval_train(
         valid_idxs=fold_df.PATIENT.isin(valid_patients),
         path=fold_path,
         lr_max=lr_max,
-        batch_size=batch_size)
+        batch_size=batch_size,
+        bag_size=bag_size)
     learn.target_label = target_label
     learn.cat_labels, learn.cont_labels = cat_labels, cont_labels
 
