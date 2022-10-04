@@ -50,7 +50,7 @@ for t in tqdm(HP.hyperparams['targets']): # loop over target labels
                                 # get the best performing model's stats
                                 new_data = src.training_utils.get_best_stats(os.path.join(output_paths[j],'fold-{}'.format(k),'history.csv'))
                                 idx = new_data.iloc[0,0]
-                                new_row = ['{}'.format(t),'MIL',HP.hyperparams['feats'][i],'{}/{}'.format(j,HP.hyperparams['runs']-1),'{}/{}'.format(k,n-1),params['lr'],params['bsize'],new_data.loc[idx,'epoch'],new_data.loc[idx,'train_loss'],new_data.loc[idx,'valid_loss'],new_data.loc[idx,'roc_auc_score']]
+                                new_row = ['{}'.format(t),'MIL',f,'{}/{}'.format(j,HP.hyperparams['runs']-1),'{}/{}'.format(k,n-1),params['lr'],params['bsize'],params['bag_size'],new_data.loc[idx,'epoch'],new_data.loc[idx,'train_loss'],new_data.loc[idx,'valid_loss'],new_data.loc[idx,'roc_auc_score']]
                                 output.append(new_row) # add the new stats
 
 
