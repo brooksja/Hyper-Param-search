@@ -1,22 +1,39 @@
-#%%
 ########## Packages ##########
+
 import tkinter as tk
 
 ########## Define GUI ##########
 # Idea: streamline hyperparameter tuning by using a GUI instead of command line
 class HPGUI():
     def __init__(self):
+        self.hyperparams = {}
         self.window = tk.Tk(className=' Hyper-Param-search') # Create window
         self.window.rowconfigure([0,1],weight=1,minsize=50)
         self.window.columnconfigure([0,1,2],weight=1,minsize=20)
 
+        # frame to get clini table location
+        frm_clini = tk.Frame(master = self.window,borderwidth=1)
+        frm_clini.grid(row=0,column=0,padx=2,pady=2)
+        lbl_clini = tk.Label(master=frm_clini,text='Specify path to clini table (should be .xlsx)')
+        lbl_clini.pack()
+        self.ent_clini = tk.Entry(master=frm_clini,width=80)
+        self.ent_clini.pack()
+        lbl_output = tk.Label(master=frm_clini,text='Specify path for output')
+        lbl_output.pack()
+        self.ent_output = tk.Entry(master=frm_clini,width=80)
+        self.ent_output.pack()
+
         # frame to get table location
-        frm_tables = tk.Frame(master = self.window,borderwidth=1)
-        frm_tables.grid(row=0,column=0,padx=2,pady=2)
-        lbl_tables = tk.Label(master=frm_tables,text='Specify path to tables')
-        lbl_tables.pack()
-        self.ent_tables = tk.Entry(master=frm_tables,width=80)
-        self.ent_tables.pack()
+        frm_slide = tk.Frame(master = self.window,borderwidth=1)
+        frm_slide.grid(row=0,column=1,padx=2,pady=2)
+        lbl_slide = tk.Label(master=frm_slide,text='Specify path to slide table (should be .csv)')
+        lbl_slide.pack()
+        self.ent_slide = tk.Entry(master=frm_slide,width=80)
+        self.ent_slide.pack()
+        lbl_runs = tk.Label(master=frm_slide,text='Specify number of runs for each combination to do')
+        lbl_runs.pack()
+        self.ent_runs = tk.Entry(master=frm_slide,width=80)
+        self.ent_runs.pack()
 
         # 1st frame asks for target labels
         frm_targets = tk.Frame(master = self.window,borderwidth=1)
@@ -71,26 +88,25 @@ class HPGUI():
         frm_start.grid(row=0,column=2,padx=2,pady=2)
         lbl_start = tk.Label(master=frm_start,text='Hit button to start hyperparameter tuning!')
         lbl_start.pack()
-        btn_start = tk.Button(master=frm_start,text='START',bg='red',width=25,height=10)
+        btn_start = tk.Button(master=frm_start,text='START',bg='red',width=25,height=10,command=lambda:self.handle_click())
         btn_start.pack()
-        btn_start.bind('<Button-1>',self.handle_click)
+        #btn_start.bind('<Button-1>',self.handle_click)
 
         self.window.mainloop()
 
     # Code to handle the button being clicked
-    def handle_click(self,event):
-        hyperparams = {}
-        hyperparams['table_path'] = self.ent_tables.get()
-        hyperparams['targets'] = self.txt_targets.get('1.0',tk.END)
-        hyperparams['feats'] = self.txt_feats.get('1.0',tk.END)
-        hyperparams['folds'] = self.txt_folds.get('1.0',tk.END)
-        hyperparams['learning_rates'] = self.txt_lr.get('1.0',tk.END)
-        hyperparams['batch_sizes'] = self.txt_bs.get('1.0',tk.END)
-        hyperparams['bag_sizes'] = self.txt_bags.get('1.0',tk.END)
+    def handle_click(self,event=None):
+        self.hyperparams['clini_path'] = self.ent_clini.get()
+        self.hyperparams['slide_path'] = self.ent_slide.get()
+        self.hyperparams['output_path'] = self.ent_output.get()
+        self.hyperparams['runs'] = self.ent_runs.get()
+        self.hyperparams['targets'] = self.txt_targets.get('1.0',tk.END)
+        self.hyperparams['feats'] = self.txt_feats.get('1.0',tk.END)
+        self.hyperparams['folds'] = self.txt_folds.get('1.0',tk.END)
+        self.hyperparams['learning_rates'] = self.txt_lr.get('1.0',tk.END)
+        self.hyperparams['batch_sizes'] = self.txt_bs.get('1.0',tk.END)
+        self.hyperparams['bag_sizes'] = self.txt_bags.get('1.0',tk.END)
 
         self.window.destroy()
-        return hyperparams
+        # use HPGUI.hyperparameters to access dictionary
 
-HPGUI()
-
-# %%

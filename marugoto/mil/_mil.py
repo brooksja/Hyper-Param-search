@@ -36,6 +36,7 @@ def train(
     path: Optional[Path] = None,
     lr_max: float = 1e-4,
     batch_size: int = 64,
+    bag_size: int = 512
 ) -> Learner:
     """Train a MLP on image features.
 
@@ -52,7 +53,7 @@ def train(
         add_features=[
             (enc, vals[~valid_idxs])
             for enc, vals in add_features],
-        bag_size=512)
+        bag_size=bag_size)
 
     valid_ds = make_dataset(
         bags=bags[valid_idxs],

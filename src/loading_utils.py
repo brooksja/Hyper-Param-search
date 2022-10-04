@@ -3,43 +3,52 @@
 ########## Packages ##########
 
 import os
+import src.error_handling as eh
 
 
 ########## Functions ##########
 
-def find_feat_folders(Cohort_Path,Desired_Feats,Use_annotated):
-    # Function walks through cohort folder looking for feature folders
-    # Returns: list of paths to feature folders
-    Feat_Paths = []
-    Base_Paths = []
-    for root,dirs,_ in os.walk(Cohort_Path):
-        if Use_annotated:
-            [Base_Paths.append(os.path.join(root,d)) for d in dirs if 'features_annotated' in d] # checks for folders containing annotated_features
-        else:
-            [Base_Paths.append(os.path.join(root,d)) for d in dirs if 'feature' in d if not('annotated' in d)] # checks for folders containing features but ignores annotated
-    
-    for f in Desired_Feats:
-    # generate path to folder of features
-        if f == 'HIPT':
-            p = [g for g in Base_Paths if 'HIPT' in g][0]
-            if 'HIPT_features' in p:
-                Feat_Paths.append(p)
-            else:
-                Feat_Paths.append(os.path.join(p,f))
-        else:
-            p = [g for g in Base_Paths if not('HIPT' in g)][0]
-            Feat_Paths.append(os.path.join(p,f))
-    
-    return Feat_Paths
+def check_hyperparams(hyperparams):
+    # function to check hyperparameters and convert to desired format
 
-def find_tables(Cohort_Path):
-    for root,_,files in os.walk(Cohort_Path):
-        for f in files:
-            if ('CLINI' in f) and (os.path.splitext(f)[1]=='.xlsx'):
-                clini_excel = os.path.join(root,f)
-            if ('SLIDE' in f) and (os.path.splitext(f)[1]=='.csv'):
-                slide_csv = os.path.join(root,f)
-    if clini_excel and slide_csv:
-        return clini_excel,slide_csv
+    # first, check table paths were entered
+    if not(hyperparams['clini_path']):
+        raise eh.NoDataError(message='Path to clini table missing')
+    if not(hyperparams['slide_path']):
+        raise eh.NoDataError(message='Path to slide table missing')
+    if not(hyperparams['output_path']):
+        raise eh.NoDataError(message='Output path missing')
+    
+    # check paths exist
+    if not(os.path.exists(hyperparams['clini_path'])):
+        raise eh.BadPathError('Cannot find clini table at '+hyperparams['clini_path'])
+    if not(os.path.exists(hyperparams['slide_path'])):
+        raise eh.BadPathError('Cannot find slide table at '+hyperparams['slide_path'])
+    # if output path does not exist, create it
+    if not(os.path.exists(hyperparams['slide_path'])):
+        raise os.makedirs(hyperparams['output_path'])
+
+    # split remaining hyperparameters into lists
+    for key in list(hyperparams.keys())[4:]:
+        hyperparams[key] = hyperparams[key].split('\n')
+        # convert folds, batch_sizes, bag_sizes to int and learning_rates to float
+        if key in ('folds','batch_sizes','bag_sizes'):
+            for i in range(len(hyperparams[key])):
+                if hyperparams[key][i] == '':
+                    hyperparams[key][i] = []
+                else:
+                    hyperparams[key][i] = int(hyperparams[key][i])
+        if key in ('learning_rates'):
+            for i in range(len(hyperparams[key])):
+                if hyperparams[key][i] == '':
+                    hyperparams[key][i] = []
+                else:
+                    hyperparams[key][i] = float(hyperparams[key][i])
+    
+    # if runs is empty or zero, set it to a default of 1 (all other params have defaults set elsewhere)
+    if not(hyperparams['runs']) or hyperparams['runs']==0:
+        hyperparams['runs'] = 1
     else:
-        print('Problem finding tables...')
+        hyperparams['runs'] = int(hyperparams['runs'])
+
+    return hyperparams
