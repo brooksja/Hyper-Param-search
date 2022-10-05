@@ -32,7 +32,7 @@ def train_one_combo(params):
             # if the feature_dir ends in a '/', remove the last character
             feature_dir = feature_dir[:-1]
         feature_string = os.path.basename(os.path.dirname(feature_dir))+'-'+os.path.basename(feature_dir)
-        output_path = os.path.join(output_path_root,target_label+'_'+feature_string+'_bs={}_lr={}_nfolds={}'.format(bsize,lr,n_splits),'Run_{}'.format(r))
+        output_path = os.path.join(output_path_root,target_label+'_'+feature_string+'_bs={}_lr={}_nfolds={}_bagsize={}'.format(bsize,lr,n_splits,bag_size),'Run_{}'.format(r))
         output_paths.append(output_path)
 
         mil.helpers.categorical_crossval_(
