@@ -30,7 +30,7 @@ def check_hyperparams(hyperparams):
 
     # split remaining hyperparameters into lists
     for key in list(hyperparams.keys())[4:]:
-        hyperparams[key] = hyperparams[key].split('\n')
+        hyperparams[key] = hyperparams[key].split('\n')[:-1]
         # convert folds, batch_sizes, bag_sizes to int and learning_rates to float
         if key in ('folds','batch_sizes','bag_sizes'):
             for i in range(len(hyperparams[key])):
