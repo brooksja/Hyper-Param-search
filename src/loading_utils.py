@@ -11,6 +11,13 @@ import src.error_handling as eh
 def check_hyperparams(hyperparams):
     # function to check hyperparameters and convert to desired format
 
+    # Defaults
+    defaults = {}
+    defaults['folds'] = int(3)
+    defaults['batch_sizes'] = int(64)
+    defaults['bag_sizes'] = int(512)
+    defaults['learning_rates'] = float(1e-3)
+
     # first, check table paths were entered
     if not(hyperparams['clini_path']):
         raise eh.NoDataError(message='Path to clini table missing')
@@ -35,13 +42,13 @@ def check_hyperparams(hyperparams):
         if key in ('folds','batch_sizes','bag_sizes'):
             for i in range(len(hyperparams[key])):
                 if hyperparams[key][i] == '':
-                    hyperparams[key][i] = []
+                    hyperparams[key][i] = defaults[key]
                 else:
                     hyperparams[key][i] = int(hyperparams[key][i])
         if key in ('learning_rates'):
             for i in range(len(hyperparams[key])):
                 if hyperparams[key][i] == '':
-                    hyperparams[key][i] = []
+                    hyperparams[key][i] = defaults[key]
                 else:
                     hyperparams[key][i] = float(hyperparams[key][i])
     
