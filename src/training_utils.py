@@ -35,6 +35,7 @@ def train_one_combo(params):
         output_path = os.path.join(output_path_root,target_label+'_'+feature_string+'_bs={}_lr={}_nfolds={}_bagsize={}'.format(bsize,lr,n_splits,bag_size),'Run_{}'.format(r))
         output_paths.append(output_path)
 
+        # run marugoto cross-val for the current set of hyperparameters
         mil.helpers.categorical_crossval_(
                         clini_excel=clini_excel,
                         slide_csv=slide_csv,
@@ -51,6 +52,7 @@ def train_one_combo(params):
     return output_paths
     
 def get_best_stats(outpath):
+    # find the best model by finding the one with the minimum validation loss
     df = pd.read_csv(outpath)
     best_model_row = df.loc[df['valid_loss']==min(df['valid_loss'])]
     return best_model_row
